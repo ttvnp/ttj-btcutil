@@ -1,0 +1,27 @@
+# go vendor packages
+vendor/
+!vendor/manifest
+
+# logs
+*.log
+log/
+
+# lock
+*.lock
+
+# pids
+*.pid
+*.seed
+
+# for Windows
+Thumbs.db
+Desktop.ini
+
+# for OSX
+.DS_Store
+
+# for direnv
+.envrc
+
+# swp
+*.swp

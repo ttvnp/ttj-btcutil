@@ -1,0 +1,5 @@
+package: github.com/ttvnp/ttj-btcutil
+import:
+- package: github.com/tyler-smith/go-bip39
+- package: github.com/btcsuite/btcd
+- package: github.com/btcsuite/btcutil
