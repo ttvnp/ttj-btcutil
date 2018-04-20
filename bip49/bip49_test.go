@@ -118,3 +118,41 @@ func TestTestnet(t *testing.T) {
 		t.Errorf("got %v where I want %v", actual, expected)
 	}
 }
+
+func TestGetKeyForIndex(t *testing.T) {
+
+	var actual interface{}
+	var expected interface{}
+
+	seedStr := "83648ffee95e8f8a2e914f313be01a8e060c81a4483e65fcf104b649037afc577caea08dddb5e252c54fa2cac8b9f8bfd06ee35a210566d71c1771ecd272f5d1"
+	seed, _ := hex.DecodeString(seedStr)
+	network := BTCTestnet
+	accountIndex := uint32(0)
+	isChange := false
+
+	accountPrvKey, err := GetExtPrvForP2SHAccount(seed, accountIndex, network)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	prvKey0, err := GetWifFormattedPrvKeyForIndex(accountPrvKey, isChange, uint32(0), network)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	expected = "cQVbUo7YQuN6YZQtF4QBG6RKdPbv4xJ2vgzA9FUWCeCKoUkQALby"
+	actual = prvKey0
+	if actual != expected {
+		t.Errorf("got %v where I want %v", actual, expected)
+	}
+
+	prvKey1, err := GetWifFormattedPrvKeyForIndex(accountPrvKey, isChange, uint32(1), network)
+	if err != nil {
+		t.Fatal(err)
+	}
+	expected = "cR5MHXt9dCP52TwcJYyQq2vyQT7A7JxQgMx3iLaDyCndMrXuqteH"
+	actual = prvKey1
+	if actual != expected {
+		t.Errorf("got %v where I want %v", actual, expected)
+	}
+}
