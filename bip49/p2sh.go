@@ -10,6 +10,7 @@ import (
 var (
 	// possible prefixes for a P2SH key (Used for key validation)
 	p2shHumanPre = map[string]bool{"ypub": true, "yprv": true, "upub": true, "uprv": true}
+	p2shHumanPreForPrv = map[string]bool{"yprv": true, "uprv": true}
 )
 
 func GetExtPrvForP2SHAccount(seed []byte, accountIndex uint32, network Network) (string, error) {
@@ -30,6 +31,35 @@ func GetExtPubForP2SHAccount(seed []byte, accountIndex uint32, network Network) 
 	}
 
 	return GetBIP49AccountKey(m, network, accountIndex, false)
+}
+
+func GetWifFormattedPrvKeyForIndex(accountKey string, isChange bool, addressIndex uint32, network Network) (string, error) {
+	validPre := p2shHumanPreForPrv[accountKey[:4]]
+	if !validPre {
+		return "", errors.New("Key does not start with a P2SH prefix")
+	}
+
+	addressType := ExternalAddress
+	if isChange {
+		addressType = ChangeAddress
+	}
+
+	k, err := GetAccountAddressKey(accountKey, addressType, addressIndex)
+	if err != nil {
+		return "", err
+	}
+
+	pk, err := k.ECPrivKey()
+	if err != nil {
+		return "", err
+	}
+
+	wif, err := btcutil.NewWIF(pk, network.ChainConfigParams(), true)
+	if err != nil {
+		return "", err
+	}
+
+	return wif.String(), nil
 }
 
 func GetP2SHAddressForIndex(accountKey string, isChange bool, addressIndex uint32, network Network) (string, error) {
